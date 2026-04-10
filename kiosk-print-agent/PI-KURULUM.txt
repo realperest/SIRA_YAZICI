@@ -1,0 +1,33 @@
+SIRA_YAZICI (public) — Raspberry Pi 4, kullanici alper
+GitHub: https://github.com/realperest/SIRA_YAZICI
+
+Bu klasordeki dosyalari repoya commit + push edin; sonra asagidaki URL'ler 404 vermez.
+
+--- Tek sefer: dosyalari indir (public raw, SSH veya tarayicidan calisir) ---
+
+cd /home/alper/apps/SIRA_YAZICI/kiosk-print-agent
+
+BASE="https://raw.githubusercontent.com/realperest/SIRA_YAZICI/main/kiosk-print-agent"
+
+wget -O boot-print-agent.sh           "$BASE/boot-print-agent.sh"
+wget -O git-pull-if-needed.sh         "$BASE/git-pull-if-needed.sh"
+wget -O siramatik-print-agent.service "$BASE/siramatik-print-agent.service"
+wget -O siramatik-print-agent-pull.service "$BASE/siramatik-print-agent-pull.service"
+wget -O siramatik-print-agent-pull.timer   "$BASE/siramatik-print-agent-pull.timer"
+
+chmod +x boot-print-agent.sh git-pull-if-needed.sh
+
+sudo cp /home/alper/apps/SIRA_YAZICI/kiosk-print-agent/siramatik-print-agent.service /etc/systemd/system/
+sudo cp /home/alper/apps/SIRA_YAZICI/kiosk-print-agent/siramatik-print-agent-pull.service /etc/systemd/system/
+sudo cp /home/alper/apps/SIRA_YAZICI/kiosk-print-agent/siramatik-print-agent-pull.timer /etc/systemd/system/
+
+sudo systemctl daemon-reload
+sudo systemctl enable --now siramatik-print-agent.service
+sudo systemctl enable --now siramatik-print-agent-pull.timer
+
+--- Kontrol ---
+
+systemctl status siramatik-print-agent.service --no-pager
+curl -s http://127.0.0.1:9131/health
+
+Not: Ana dal adiniz "main" degilse BASE URL'de main yerine dal adinizi yazin.

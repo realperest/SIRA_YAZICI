@@ -1,0 +1,20 @@
+# Zamanlayici ile periyodik guncelleme. Yolu kuruluma gore degistir.
+#
+# sudo cp siramatik-print-agent-pull.service /etc/systemd/system/
+# sudo cp siramatik-print-agent-pull.timer /etc/systemd/system/
+# sudo systemctl daemon-reload
+# sudo systemctl enable --now siramatik-print-agent-pull.timer
+#
+# chmod +x .../git-pull-if-needed.sh
+
+[Unit]
+Description=Siramatik print-agent: git pull (sadece gerideyse) + agent yeniden baslat
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c 'if runuser -u alper -- /home/alper/apps/SIRA_YAZICI/kiosk-print-agent/git-pull-if-needed.sh; then systemctl try-restart siramatik-print-agent.service; fi'
+
+[Install]
+WantedBy=multi-user.target
